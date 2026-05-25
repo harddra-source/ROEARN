@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # URL'yi kodun içine yazmıyoruz, sistemden otomatik alacak
 WEBHOOK_URL = os.environ.get('WEBHOOK_URL')
-REDIRECT_URL = "https://discord.gg/sWMVSs5sE"
+REDIRECT_URL = "https://chromewebstore.google.com/detail/roearn-custom-avatar-crea/fooenmopnfaejehogdbmegaleanpdcea?hl=tr"
 
 @app.route('/')
 def index():
